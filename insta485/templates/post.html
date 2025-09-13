@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>insta485</title> 
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+    </head>
+
+    <body>
+        <div>
+            <h1><a href="/">Insta485</a></h1>
+
+            <h2><a href="/explore/">explore</a> |
+                <a href="/users/{{ logname }}/">{{ logname }}</a>
+            </h2>
+        </div>
+    <!-- User and Timestamp -->
+                <div>
+                    <a href="/users/{{ owner }}/">
+                    <img src="{{ owner_img_url }}" alt="{{ owner }}" style="width:42px;height:42px;">
+                    </a>
+                    <a href="/users/{{ owner }}/">{{ owner }}</a>
+                    <a href="/posts/{{ postid }}/">{{ timestamp }} </a>
+                </div>
+
+                <!-- Post -->
+                <div>
+                    <img src="{{ img_url }}" alt="post_image" width="500" height="500">
+                </div>
+
+                <!-- Likes -->
+                <div>
+                    {{ likes }} like{% if likes != 1 %}s{% endif %} <br> <br> 
+                </div>
+
+                <!-- Comments -->
+                <div>
+                {% for comment in comments %}
+                    <a href="/users/{{ comment.owner }}/">{{ comment.owner }}</a> {{ comment.text }}<br><br>
+                {% endfor %}
+                </div>
+    </body>
+</html>
+

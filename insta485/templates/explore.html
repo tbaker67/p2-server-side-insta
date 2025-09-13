@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+    <div>
+        <h1><a href="/">Insta485</a></h1>
+        <h2>
+            <a href="/explore/">explore</a> |
+            <a href="/users/{{ logname }}/">{{ logname }}</a>
+        </h2>
+    </div>
+
+    <div>
+        Discover People <br><br>
+
+        {% for not_follow in not_following %}
+            <img src="{{ not_follow.user_img_url }}" alt="{{ not_follow.username }}" style="width:42px;height:42px;">
+            <a href="/users/{{ not_follow.username }}/">{{ not_follow.username }}</a><br><br>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
