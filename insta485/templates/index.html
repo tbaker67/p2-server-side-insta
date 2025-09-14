@@ -19,16 +19,16 @@
     <!-- User and Timestamp -->
     <div>
         <a href="/users/{{ post.owner }}/">
-            <img src="{{ post.owner_img_url }}" alt="{{ post.owner }}" style="width:42px;height:42px;">
+            <img src="/uploads/{{ post.user_filename }}" alt="{{ post.owner }}" style="width:42px;height:42px;">
             
         </a>
         <a href="/users/{{ post.owner }}/">{{ post.owner }}</a>
-        <a href="/posts/{{ post.postid }}/">{{ post.timestamp }}</a>
+        <a href="/posts/{{ post.postid }}/">{{ post.humanized }}</a>
     </div>
 
     <!-- Post -->
     <div>
-        <img src="{{ post.img_url }}" alt="post_image" width="500" height="500">
+        <img src="/uploads/{{ post.post_filename }}" alt="post_image" width="500" height="500">
     </div>
 
     <!-- Likes -->
