@@ -41,6 +41,7 @@ INSERT INTO posts(filename,owner) VALUES
 
 INSERT INTO following(follower, followee) VALUES
     ('awdeorio','jflinn'),
+    ('awdeorio','michjc'),
     ('jflinn','awdeorio'),
     ('jflinn','michjc'),
     ('michjc','awdeorio'),
