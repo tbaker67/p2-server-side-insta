@@ -23,21 +23,27 @@
                 {{ username }}
             </h2>
             {% if username != logname %} 
-                    {% if logname_follows_username %} following 
+                {% if logname_follows_username %} following 
                     <form action="<FIXME_FOLLOWING_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
                     <input type="submit" name="unfollow" value="unfollow"/>
                     <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
                     <input type="hidden" name="operation" value="unfollow"/>
                     </form>
-                    {% endif %}
-                    {% if not logname_follows_username %} not following 
+                {% endif %}
+                {% if not logname_follows_username %} not following 
                     <form action="<FIXME_FOLLOWING_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
                     <input type="submit" name="follow" value="follow"/>
                     <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
                     <input type="hidden" name="operation" value="follow"/>
                     </form>
-                    {% endif %}
                 {% endif %}
+            {% else %}
+                <a href="/accounts/edit/"> Edit Account</a>
+                <form action="<FIXME_LOGOUT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+                <input type="submit" name="logout" value="Logout"/>
+                </form>
+            {% endif %}
+
 
             <h3>
             <br><br>
