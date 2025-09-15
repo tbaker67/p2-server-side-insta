@@ -50,6 +50,12 @@ def show_index():
         (logname, logname)
     ).fetchall()
 
+    liked_posts = connection.execute(
+        "SELECT postid FROM likes WHERE owner = ?",
+        (logname,)
+    ).fetchall()
+    liked_postids = {row["postid"] for row in liked_posts}
+
     for post in posts:
         postid = post["postid"]
         post["humanized"] = arrow.get(post["created"]).humanize()
@@ -66,6 +72,8 @@ def show_index():
             "WHERE postid = ? ORDER BY commentid ASC",
             (postid,)
         ).fetchall()
+        post["liked"] = post["postid"] in liked_postids
+
     # Add database info to context
     context = {"logname": logname, "posts": posts}
     return flask.render_template("index.html", **context)
@@ -259,6 +267,20 @@ def show_post(postid_url_slug):
         "WHERE postid = ? ORDER BY commentid ASC",
         (postid,)
     ).fetchall()
+
+    liked = False
+
+    like_query = connection.execute(
+        "SELECT 1 FROM likes "
+        "WHERE owner = ? AND "
+        "postid = ?",
+        (logname, postid)
+    ).fetchone()
+
+    if like_query:
+        liked=True
+
+    post["liked"] = liked
 
     # Add database info to context
     context = {"logname": logname, "post": post}

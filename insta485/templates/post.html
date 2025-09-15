@@ -39,6 +39,22 @@
                     <a href="/users/{{ comment.owner }}/">{{ comment.owner }}</a> {{ comment.text }}<br><br>
                 {% endfor %}
                 </div>
+                {% if not post.liked %}
+                <form action="<FIXME_LIKES_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="like"/>
+                <input type="hidden" name="postid" value="<FIXME_POST_ID_HERE>"/>
+                <input type="submit" name="like" value="like"/>
+                </form>
+                <br><br>
+
+                {% else %}
+                <form action="<FIXME_LIKES_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="unlike"/>
+                <input type="hidden" name="postid" value="<FIXME_POST_ID_HERE>"/>
+                <input type="submit" name="unlike" value="unlike"/>
+                </form>
+                <br><br>
+                {% endif %}
     </body>
 </html>
 
