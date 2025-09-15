@@ -19,7 +19,7 @@
         Discover People <br><br>
 
         {% for not_follow in not_following %}
-            <img src="{{ not_follow.user_img_url }}" alt="{{ not_follow.username }}" style="width:42px;height:42px;">
+            <img src="/uploads/{{ not_follow.user_filename }}" alt="{{ not_follow.username }}" style="width:42px;height:42px;">
             <a href="/users/{{ not_follow.username }}/">{{ not_follow.username }}</a><br><br>
         {% endfor %}
     </div>

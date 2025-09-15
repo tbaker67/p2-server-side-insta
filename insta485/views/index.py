@@ -267,4 +267,34 @@ def show_post(postid_url_slug):
 
 @insta485.app.route('/explore/')
 def show_explore():
-    pass
+
+    connection = insta485.model.get_db()
+    # TODO: REPLACE WITH LOGNAME LATER!!!!
+    logname = "awdeorio"
+
+    not_following_rows = connection.execute(
+        "SELECT users.username " 
+        "FROM users "
+        "WHERE users.username != ? "
+        "AND username NOT IN "
+        "(SELECT following.followee " 
+        "FROM following " 
+        "WHERE following.follower = ?)",
+        (logname,logname)
+    ).fetchall()
+
+    not_following = []
+    for row in not_following_rows:
+        username = row["username"]
+        user = connection.execute(
+            "SELECT filename AS user_filename "
+            "FROM users "
+            "WHERE username = ?",
+            (username,)
+        ).fetchone()
+        user_filename = user["user_filename"]
+        not_following.append({'username': username, 'user_filename': user_filename})
+
+
+    context = {'logname': logname, 'not_following': not_following}
+    return flask.render_template('explore.html', **context)
