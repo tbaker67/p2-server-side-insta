@@ -18,7 +18,7 @@
         <div>
             Followers <br>
             {% for follower in followers %}
-                <img src="{{ follower.user_img_url }}" alt="post_image" style="width:42px;height:42px;">
+                <img src="/uploads/{{ follower.user_filename }}" alt="post_image" style="width:42px;height:42px;">
                 <a href="/users/{{ follower.username }}/">{{ follower.username }}</a>
                 {% if follower.username != logname %} 
                     {% if follower.logname_follows_username %} following {% endif %}

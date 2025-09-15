@@ -126,3 +126,87 @@ def show_users(user_url_slug):
     }
 
     return flask.render_template("user.html", **context)
+
+@insta485.app.route('/users/<user_url_slug>/following/')
+def show_following(user_url_slug):
+
+    connection = insta485.model.get_db()
+    ## TODO: REPLACE WITH LOGNAME LATER!!!!
+    logname = "awdeorio"
+
+    user = connection.execute(
+    "SELECT username, fullname FROM users WHERE username = ?",
+    (user_url_slug,)
+    ).fetchone()
+
+    if user is None:
+        abort(404)
+
+    following_rows = connection.execute(
+        "SELECT users.username, users.filename AS user_filename "
+        "FROM following "
+        "JOIN users ON following.followee = users.username "
+        "WHERE following.follower = ?",
+        (user_url_slug,)
+    ).fetchall()
+
+    following = []
+    for row in following_rows:
+        info = dict(row)
+        # Determine relationship to logged-in user
+        logname_follows_username = False
+        if logname != row["username"]:
+            follow = connection.execute(
+                "SELECT 1 FROM following "
+                "WHERE follower = ? AND followee = ?",
+                (logname, row["username"])
+            ).fetchone()
+            if follow:
+                logname_follows_username = True
+        info["logname_follows_username"] = logname_follows_username
+        following.append(info)
+
+    context = {"logname":logname, "following":following}
+    return flask.render_template("following.html", **context)
+
+@insta485.app.route('/users/<user_url_slug>/followers/')
+def show_followers(user_url_slug):
+
+    connection = insta485.model.get_db()
+    ## TODO: REPLACE WITH LOGNAME LATER!!!!
+    logname = "awdeorio"
+
+    user = connection.execute(
+    "SELECT username, fullname FROM users WHERE username = ?",
+    (user_url_slug,)
+    ).fetchone()
+
+    if user is None:
+        abort(404)
+
+    follower_rows = connection.execute(
+        "SELECT users.username, users.filename AS user_filename "
+        "FROM following "
+        "JOIN users ON following.follower = users.username "
+        "WHERE following.followee = ?",
+        (user_url_slug,)
+    ).fetchall()
+
+    followers = []
+    for row in follower_rows:
+        info = dict(row)
+        # Determine relationship to logged-in user
+        logname_follows_username = False
+        if logname != row["username"]:
+            follow = connection.execute(
+                "SELECT 1 FROM following "
+                "WHERE follower = ? AND followee = ?",
+                (logname, row["username"])
+            ).fetchone()
+            if follow:
+                logname_follows_username = True
+        info["logname_follows_username"] = logname_follows_username
+        followers.append(info)
+
+    context = {"logname":logname, "followers":followers}
+    return flask.render_template("followers.html", **context)
