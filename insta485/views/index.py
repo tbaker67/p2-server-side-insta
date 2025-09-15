@@ -7,6 +7,23 @@ URLs include:
 import flask
 import insta485
 import arrow
+from flask import abort, send_from_directory, session
+import os
+
+@insta485.app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    """Serve uploaded files with login required."""
+    # TODO: replace hardcoded login with session-based login
+    #if "username" not in session:
+       # abort(403)  # Forbidden if not logged in
+
+    folder = str(insta485.app.config["UPLOAD_FOLDER"])
+    path = os.path.join(folder, filename)
+
+    if not os.path.isfile(path):
+        abort(404)  # File not found
+
+    return send_from_directory(folder, filename)
 
 
 @insta485.app.route('/')
@@ -17,40 +34,95 @@ def show_index():
     connection = insta485.model.get_db()
 
     # Query database
-    ## POSSIBLY REPLACE LATER!!!!
+    ## TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = "awdeorio"
-    cur = connection.execute(
-    "SELECT posts.postid, posts.filename AS post_filename, "
-    "posts.owner, posts.created, users.fullname, "
-    "users.filename AS user_filename "
-    "FROM posts "
-    "JOIN users ON posts.owner = users.username "
-    "WHERE posts.owner = ? "
-    "OR posts.owner IN (SELECT followee FROM following WHERE follower = ?) "
-    "ORDER BY posts.postid DESC",
-    (logname, logname)
-    )
-    posts = cur.fetchall()
+    posts = connection.execute(
+        "SELECT posts.postid, posts.filename AS post_filename, "
+        "posts.owner, posts.created, users.fullname, "
+        "users.filename AS user_filename "
+        "FROM posts "
+        "JOIN users ON posts.owner = users.username "
+        "WHERE posts.owner = ? "
+        "OR posts.owner IN (SELECT followee FROM following WHERE follower = ?) "
+        "ORDER BY posts.postid DESC",
+        (logname, logname)
+    ).fetchall()
 
     for post in posts:
         postid = post["postid"]
-        
         post["humanized"] = arrow.get(post["created"]).humanize()
-
         # Likes count
-        cur = connection.execute(
+        post["likes"] = connection.execute(
             "SELECT COUNT(*) AS like_count FROM likes WHERE postid = ?",
             (postid,)
-        )
-        post["likes"] = cur.fetchone()["like_count"]
-
+        ).fetchone()["like_count"]
         # Comments
-        cur = connection.execute(
+        post["comments"] = connection.execute(
             "SELECT owner, text FROM comments WHERE postid = ? ORDER BY created ASC",
             (postid,)
-        )
-        post["comments"] = cur.fetchall()
-
+        ).fetchall()
     # Add database info to context
     context = {"logname": logname, "posts": posts}
     return flask.render_template("index.html", **context)
+
+@insta485.app.route('/users/<user_url_slug>/')
+#TODO: ADD IN EDIT PROFILE, LOGOUT, AND MAKE POST
+def show_users(user_url_slug):
+
+    connection = insta485.model.get_db()
+    ## TODO: REPLACE WITH LOGNAME LATER!!!!
+    logname = "awdeorio"
+
+    user = connection.execute(
+    "SELECT username, fullname FROM users WHERE username = ?",
+    (user_url_slug,)
+    ).fetchone()
+
+    if user is None:
+        abort(404)
+    
+    logname_follows_username = False
+    if logname != user_url_slug:
+        follow = connection.execute(
+            "SELECT 1 FROM following "
+            "WHERE follower = ? and followee = ?",
+            (logname, user_url_slug)
+        ).fetchone()
+        if follow:
+            logname_follows_username = True
+    
+    total_posts = connection.execute(
+        "SELECT COUNT(*) AS count FROM posts WHERE posts.owner = ?",
+        (user_url_slug,)
+    ).fetchone()["count"]
+
+    followers = connection.execute(
+        "SELECT COUNT(*) AS count FROM following WHERE followee = ?",
+        (user_url_slug,)
+    ).fetchone()["count"]
+
+    following = connection.execute(
+        "SELECT COUNT(*) AS count FROM following WHERE follower = ?",
+        (user_url_slug,)
+    ).fetchone()["count"]
+
+    posts = connection.execute(
+        "SELECT postid, filename AS post_filename FROM posts WHERE owner = ? ORDER BY postid DESC",
+        (user_url_slug,)
+    ).fetchall()
+
+
+    context = {
+        "logname": logname,
+        "username": user["username"],
+        "fullname": user["fullname"],
+
+        "logname_follows_username": logname_follows_username,
+        "total_posts": total_posts,
+        "followers": followers,
+        "following": following,
+
+        "posts": posts
+    }
+
+    return flask.render_template("user.html", **context)
