@@ -16,26 +16,26 @@
         </div>
     <!-- User and Timestamp -->
                 <div>
-                    <a href="/users/{{ owner }}/">
-                    <img src="{{ owner_img_url }}" alt="{{ owner }}" style="width:42px;height:42px;">
+                    <a href="/users/{{ post.owner }}/">
+                    <img src="/uploads/{{ post.user_filename}}" alt="{{ owner }}" style="width:42px;height:42px;">
                     </a>
-                    <a href="/users/{{ owner }}/">{{ owner }}</a>
-                    <a href="/posts/{{ postid }}/">{{ timestamp }} </a>
+                    <a href="/users/{{ post.owner }}/">{{ post.owner }}</a>
+                    <a href="/posts/{{ post.postid }}/">{{ post.humanized }} </a>
                 </div>
 
                 <!-- Post -->
                 <div>
-                    <img src="{{ img_url }}" alt="post_image" width="500" height="500">
+                    <img src="/uploads/{{ post.post_filename }}" alt="post_image" width="500" height="500">
                 </div>
 
                 <!-- Likes -->
                 <div>
-                    {{ likes }} like{% if likes != 1 %}s{% endif %} <br> <br> 
+                    {{ post.likes }} like{% if post.likes != 1 %}s{% endif %} <br> <br> 
                 </div>
 
                 <!-- Comments -->
                 <div>
-                {% for comment in comments %}
+                {% for comment in post.comments %}
                     <a href="/users/{{ comment.owner }}/">{{ comment.owner }}</a> {{ comment.text }}<br><br>
                 {% endfor %}
                 </div>

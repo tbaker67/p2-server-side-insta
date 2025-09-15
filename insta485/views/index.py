@@ -58,7 +58,7 @@ def show_index():
         ).fetchone()["like_count"]
         # Comments
         post["comments"] = connection.execute(
-            "SELECT owner, text FROM comments WHERE postid = ? ORDER BY created ASC",
+            "SELECT owner, text FROM comments WHERE postid = ? ORDER BY commentid ASC",
             (postid,)
         ).fetchall()
     # Add database info to context
@@ -210,3 +210,44 @@ def show_followers(user_url_slug):
 
     context = {"logname":logname, "followers":followers}
     return flask.render_template("followers.html", **context)
+
+@insta485.app.route('/posts/<postid_url_slug>/')
+def show_post(postid_url_slug):
+    connection = insta485.model.get_db()
+    ## TODO: REPLACE WITH LOGNAME LATER!!!!
+    logname = "awdeorio"
+
+    post = connection.execute(
+        "SELECT postid, filename AS post_filename, "
+        "owner, created "
+        "FROM posts WHERE postid = ?",
+        (postid_url_slug,)
+    ).fetchone()
+
+    if post is None:
+        abort(404)
+    
+    user = connection.execute(
+        "SELECT filename AS user_filename "
+        "FROM users WHERE username = ?",
+        (post["owner"],)
+    ).fetchone()
+
+    post["user_filename"] = user["user_filename"]
+    
+    postid = post["postid"]
+    post["humanized"] = arrow.get(post["created"]).humanize()
+    # Likes count
+    post["likes"] = connection.execute(
+        "SELECT COUNT(*) AS like_count FROM likes WHERE postid = ?",
+        (postid,)
+    ).fetchone()["like_count"]
+    # Comments
+    post["comments"] = connection.execute(
+        "SELECT owner, text FROM comments WHERE postid = ? ORDER BY commentid ASC",
+        (postid,)
+    ).fetchall()
+    
+    # Add database info to context
+    context = {"logname": logname, "post": post}
+    return flask.render_template("post.html", **context)
