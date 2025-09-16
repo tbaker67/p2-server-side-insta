@@ -43,22 +43,29 @@
         {% endfor %}
     </div>
     {% if not post.liked %}
-    <form action="<FIXME_LIKES_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+    <form action="/likes/?target={{ request.path }}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="operation" value="like"/>
-    <input type="hidden" name="postid" value="<FIXME_POST_ID_HERE>"/>
+    <input type="hidden" name="postid" value="{{ post.postid }}"/>
     <input type="submit" name="like" value="like"/>
     </form>
-    <br><br>
+  
 
     {% else %}
-    <form action="<FIXME_LIKES_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+    <form action="/likes/?target={{ request.path }}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="operation" value="unlike"/>
-    <input type="hidden" name="postid" value="<FIXME_POST_ID_HERE>"/>
+    <input type="hidden" name="postid" value="{{ post.postid }}"/>
     <input type="submit" name="unlike" value="unlike"/>
     </form>
-    <br><br>
+    
     {% endif %}
-
+    <br>
+    <form action="/comments/?target={{ request.path }}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="operation" value="create"/>
+    <input type="hidden" name="postid" value="{{ post.postid }}"/>
+    <input type="text" name="text" required/>
+    <input type="submit" name="comment" value="comment"/>
+    </form>
+    <br><br>
     {% endfor %}
 
 </body>

@@ -24,22 +24,22 @@
             </h2>
             {% if username != logname %} 
                 {% if logname_follows_username %} following 
-                    <form action="<FIXME_FOLLOWING_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+                    <form action="/following/?target={{ request.path }}" method="post" enctype="multipart/form-data">
                     <input type="submit" name="unfollow" value="unfollow"/>
-                    <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
+                    <input type="hidden" name="username" value="{{ username }}"/>
                     <input type="hidden" name="operation" value="unfollow"/>
                     </form>
                 {% endif %}
                 {% if not logname_follows_username %} not following 
-                    <form action="<FIXME_FOLLOWING_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+                    <form action="/following/?target={{ request.path }}" method="post" enctype="multipart/form-data">
                     <input type="submit" name="follow" value="follow"/>
-                    <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
+                    <input type="hidden" name="username" value="{{ username }}"/>
                     <input type="hidden" name="operation" value="follow"/>
                     </form>
                 {% endif %}
             {% else %}
                 <a href="/accounts/edit/"> Edit Account</a>
-                <form action="<FIXME_LOGOUT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+                <form action="/accounts/logout/" method="post" enctype="multipart/form-data">
                 <input type="submit" name="logout" value="Logout"/>
                 </form>
             {% endif %}
@@ -56,7 +56,15 @@
 
 
         </div>
-
+            {% if logname == username %}
+            <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+                <form action="/posts/?target={{ request.path }}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required/>
+                <input type="submit" name="create_post" value="upload new post"/>
+                <input type="hidden" name="operation" value="create"/>
+                </form>
+            {% endif %}
+            <br><br>
         <div>
             {% if total_posts == 0 %}
                     No posts yet.
@@ -67,6 +75,7 @@
             {% endif %}
             
         </div>
+
     </body>
 </html>
 
