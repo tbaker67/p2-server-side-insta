@@ -21,6 +21,11 @@
         {% for not_follow in not_following %}
             <img src="/uploads/{{ not_follow.user_filename }}" alt="{{ not_follow.username }}" style="width:42px;height:42px;">
             <a href="/users/{{ not_follow.username }}/">{{ not_follow.username }}</a><br><br>
+            <form action="/following/?target={{ request.path }}" method="post" enctype="multipart/form-data">
+            <input type="submit" name="follow" value="follow"/>
+            <input type="hidden" name="username" value="{{ not_follow.username }}"/>
+            <input type="hidden" name="operation" value="follow"/>
+            </form>
         {% endfor %}
     </div>
 
