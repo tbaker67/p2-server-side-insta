@@ -67,7 +67,7 @@ def show_index():
         ).fetchone()["like_count"]
         # Comments
         post["comments"] = connection.execute(
-            "SELECT owner, text "
+            "SELECT owner, text, commentid "
             "FROM comments "
             "WHERE postid = ? ORDER BY commentid ASC",
             (postid,)
