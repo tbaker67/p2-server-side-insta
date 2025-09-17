@@ -392,7 +392,7 @@ def show_edit():
         return flask.render_template('edit.html', **context)
     
 @insta485.app.route('/accounts/password/')
-def show_delete():
+def show_password():
     """Show accounts/delete page"""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
@@ -406,4 +406,76 @@ def logout():
     session.clear()
     return flask.redirect(flask.url_for('show_login'))
         
+import hashlib
 
+
+@insta485.app.route('/accounts/', methods=['POST'])
+def accounts():
+    """Perform account operations and redirect."""
+
+    operation = flask.request.form.get('operation')
+    target = flask.request.args.get('target', flask.url_for('show_index'))
+
+    if operation == "login":
+        # TODO: handle login (check username/password, set session)
+
+        username = flask.request.form.get('username')
+        password = flask.request.form.get('password')
+
+
+        if not username or not password:
+            abort(400)
+
+        connection = insta485.model.get_db()
+
+        login_info = connection.execute(
+            "SELECT password "
+            "FROM users "
+            "WHERE username = ?",
+            (username,)
+        ).fetchone()
+
+        # No matching username
+        if login_info is None:
+            abort(403)
+
+        algorithm, salt, true_hashed_password = login_info['password'].split('$',2)
+
+        m = hashlib.new(algorithm)
+        password_salted = salt + password
+        m.update(password_salted.encode('utf-8'))
+        password_hash = m.hexdigest()
+
+        if password_hash != true_hashed_password:
+            abort(403)
+        else:
+            session['logname'] = username
+
+        
+
+    elif operation == "create":
+        # TODO: handle account creation
+        pass
+
+    elif operation == "delete":
+        # TODO: handle account deletion
+        pass
+
+    elif operation == "edit_account":
+        # TODO: handle account editing
+        pass
+
+    elif operation == "update_password":
+        # TODO: handle password update
+        pass
+
+    elif operation == "logout":
+        # TODO: handle logout
+        pass
+
+    else:
+        # Invalid operation
+        abort(400)
+
+    # Finally redirect to target
+    return flask.redirect(target)
