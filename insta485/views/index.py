@@ -15,8 +15,8 @@ import os
 def uploaded_file(filename):
     """Serve uploaded files with login required."""
     # TODO: replace hardcoded login with session-based login
-    # if "username" not in session:
-    # abort(403)
+    #if "logname" not in session:
+        #abort(403)
 
     folder = str(insta485.app.config["UPLOAD_FOLDER"])
     path = os.path.join(folder, filename)
@@ -30,13 +30,15 @@ def uploaded_file(filename):
 @insta485.app.route('/')
 def show_index():
     """Display / route."""
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
 
     # Connect to database
     connection = insta485.model.get_db()
 
     # Query database
     # TODO: REPLACE WITH LOGNAME LATER!!!!
-    logname = "awdeorio"
+    logname = session['logname']
     posts = connection.execute(
         "SELECT posts.postid, posts.filename AS post_filename, "
         "posts.owner, posts.created, users.fullname, "
@@ -80,12 +82,17 @@ def show_index():
 
 
 @insta485.app.route('/users/<user_url_slug>/')
-# TODO: ADD IN EDIT PROFILE, LOGOUT, AND MAKE POST
-def show_users(user_url_slug):
 
+
+def show_users(user_url_slug):
+    """Show user page"""
+
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
+    
     connection = insta485.model.get_db()
     # TODO: REPLACE WITH LOGNAME LATER!!!!
-    logname = "awdeorio"
+    logname = session['logname']
 
     user = connection.execute(
         "SELECT username, fullname FROM users WHERE username = ?",
@@ -146,10 +153,14 @@ def show_users(user_url_slug):
 
 @insta485.app.route('/users/<user_url_slug>/following/')
 def show_following(user_url_slug):
+    """Show following page"""
+
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
     # TODO: REPLACE WITH LOGNAME LATER!!!!
-    logname = "awdeorio"
+    logname = session['logname']
 
     user = connection.execute(
         "SELECT username, fullname FROM users WHERE username = ?",
@@ -189,10 +200,14 @@ def show_following(user_url_slug):
 
 @insta485.app.route('/users/<user_url_slug>/followers/')
 def show_followers(user_url_slug):
+    """show followers page"""
+
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
     # TODO: REPLACE WITH LOGNAME LATER!!!!
-    logname = "awdeorio"
+    logname = session['logname']
 
     user = connection.execute(
         "SELECT username, fullname FROM users WHERE username = ?",
@@ -232,9 +247,14 @@ def show_followers(user_url_slug):
 
 @insta485.app.route('/posts/<postid_url_slug>/')
 def show_post(postid_url_slug):
+    """show post page"""
+
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
+    
     connection = insta485.model.get_db()
     # TODO: REPLACE WITH LOGNAME LATER!!!!
-    logname = "awdeorio"
+    logname = session['logname']
 
     post = connection.execute(
         "SELECT postid, filename AS post_filename, "
@@ -289,10 +309,14 @@ def show_post(postid_url_slug):
 
 @insta485.app.route('/explore/')
 def show_explore():
+    """Show explore page"""
+
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
     # TODO: REPLACE WITH LOGNAME LATER!!!!
-    logname = "awdeorio"
+    logname = session['logname']
 
     not_following_rows = connection.execute(
         "SELECT users.username " 
@@ -320,3 +344,66 @@ def show_explore():
 
     context = {'logname': logname, 'not_following': not_following}
     return flask.render_template('explore.html', **context)
+
+@insta485.app.route('/accounts/login/')
+def show_login():
+    """Show accounts/ login page"""
+    if 'logname' in session:
+        return flask.redirect(flask.url_for('show_index'))
+    else:
+        return flask.render_template('login.html')
+
+
+@insta485.app.route('/accounts/create/')
+def show_create():
+    """show accounts/create page"""
+    if 'logname' in session:
+        return flask.redirect(flask.url_for('show_edit'))
+    else:
+        return flask.render_template('create.html')
+
+@insta485.app.route('/accounts/delete/')
+def show_delete():
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
+    else:
+        return flask.render_template('delete.html', logname=session['logname'])
+
+
+@insta485.app.route('/accounts/edit/')
+def show_edit():
+    """Show accounts/edit page"""
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
+
+    else:
+        logname = session['logname']
+        connection = insta485.model.get_db()
+
+        user_info = connection.execute(
+            "SELECT username, fullname, "
+            "email, filename AS user_filename "
+            "FROM users "
+            "Where username = ?",
+            (logname,)
+        ).fetchone()
+
+        context = {'logname': logname, 'user_info': user_info}
+        return flask.render_template('edit.html', **context)
+    
+@insta485.app.route('/accounts/password/')
+def show_delete():
+    """Show accounts/delete page"""
+    if 'logname' not in session:
+        return flask.redirect(flask.url_for('show_login'))
+    else:
+        return flask.render_template('password.html', logname=session['logname'])
+
+@insta485.app.route('/accounts/logout/', methods=['POST'])
+def logout():
+    """Log out user and redirect to login page."""
+
+    session.clear()
+    return flask.redirect(flask.url_for('show_login'))
+        
+

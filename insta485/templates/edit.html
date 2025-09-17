@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+    <div>
+        <h1><a href="/">Insta485</a></h1>
+        <h2>
+            <a href="/explore/">explore</a> |
+            <a href="/users/{{ logname }}/">{{ logname }}</a>
+        </h2>
+    </div>
+ <img src="/uploads/{{ user_info.user_filename }}" alt="{{ logname }}" style="width:42px;height:42px;"> {{ logname }} <br>
+<form action="/accounts/?target={{ request.path }}" method="post" enctype="multipart/form-data"><br>
+  <input type="file" name="file" accept="image/*"/><br>
+  <input type="text" name="fullname" value="{{ user_info.fullname }}" required/><br>
+  <input type="text" name="email" value="{{ user_info.email }}" required/><br>
+  <input type="submit" name="update" value="submit"/><br>
+  <input type="hidden" name="operation" value="edit_account"/><br>
+</form>
+
+<a href="/accounts/password/">Change password</a> <br>
+<a href="/accounts/delete/">Delete account</a>
+</body>
+</html>
