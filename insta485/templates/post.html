@@ -36,7 +36,7 @@
                 <!-- Comments -->
                 <div>
                 {% for comment in post.comments %}
-                    <a href="/users/{{ comment.owner }}/">{{ comment.owner }}</a> {{ comment.text }}<br><br>
+                    <a href="/users/{{ comment.owner }}/">{{ comment.owner }}</a> {{ comment.text }}
                     {% if comment.owner == logname %}
                         <form action="/comments/?target={{ request.path }}" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="operation" value="delete"/>
@@ -44,7 +44,7 @@
                         <input type="submit" name="uncomment" value="delete"/>
                         </form>
                     {% endif %}
-
+                <br><br>
                 {% endfor %}
                 </div>
                 {% if not post.liked %}

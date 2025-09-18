@@ -281,7 +281,7 @@ def show_post(postid_url_slug):
     ).fetchone()["like_count"]
     # Comments
     post["comments"] = connection.execute(
-        "SELECT owner, text FROM comments "
+        "SELECT owner, text, commentid FROM comments "
         "WHERE postid = ? ORDER BY commentid ASC",
         (postid,)
     ).fetchall()

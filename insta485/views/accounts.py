@@ -90,12 +90,17 @@ def create_password(password):
 
 def create_file(fileobj):
     """create a uuid file for the db and return the new filename"""
+
+    if fileobj is None:
+        abort(400)
     filename = fileobj.filename
 
     # Compute base name (filename without directory).  We use a UUID to avoid
     # clashes with existing files, and ensure that the name is compatible with the
     # filesystem. For best practive, we ensure uniform file extensions (e.g.
     # lowercase).
+
+        
     stem = uuid.uuid4().hex
     suffix = pathlib.Path(filename).suffix.lower()
     uuid_basename = f"{stem}{suffix}"
@@ -341,3 +346,10 @@ def accounts():
 
     # Invalid operation
     abort(400)
+
+
+@insta485.app.route('/accounts/auth/')
+def show_auth():
+    if 'logname' not in session:
+        abort(403)
+    return flask.Response(status=200)
