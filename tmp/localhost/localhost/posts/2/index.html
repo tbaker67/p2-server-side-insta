@@ -39,6 +39,7 @@
                     <a href="/users/awdeorio/">awdeorio</a> Sick #crossword
                     
                         <form action="/comments/?target=/posts/2/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                         <input type="hidden" name="operation" value="delete"/>
                         <input type="hidden" name="commentid" value="4"/>
                         <input type="submit" name="uncomment" value="delete"/>
@@ -49,6 +50,7 @@
                 </div>
                 
                     <form action="/likes/?target=/posts/2/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                     <input type="hidden" name="operation" value="unlike"/>
                     <input type="hidden" name="postid" value="2"/>
                     <input type="submit" name="unlike" value="unlike"/>
@@ -57,6 +59,7 @@
                 
                 <br>
                 <form action="/comments/?target=/posts/2/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                 <input type="hidden" name="operation" value="create"/>
                 <input type="hidden" name="postid" value="2"/>
                 <input type="text" name="text" required/>

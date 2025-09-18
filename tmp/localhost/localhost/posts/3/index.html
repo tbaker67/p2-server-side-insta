@@ -39,6 +39,7 @@
                     <a href="/users/awdeorio/">awdeorio</a> #chickensofinstagram
                     
                         <form action="/comments/?target=/posts/3/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                         <input type="hidden" name="operation" value="delete"/>
                         <input type="hidden" name="commentid" value="1"/>
                         <input type="submit" name="uncomment" value="delete"/>
@@ -57,6 +58,7 @@
                 </div>
                 
                     <form action="/likes/?target=/posts/3/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                     <input type="hidden" name="operation" value="unlike"/>
                     <input type="hidden" name="postid" value="3"/>
                     <input type="submit" name="unlike" value="unlike"/>
@@ -65,6 +67,7 @@
                 
                 <br>
                 <form action="/comments/?target=/posts/3/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                 <input type="hidden" name="operation" value="create"/>
                 <input type="hidden" name="postid" value="3"/>
                 <input type="text" name="text" required/>
@@ -74,6 +77,7 @@
                 
                 <br>
                     <form action="/posts/?target=/users/awdeorio/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                     <input type="hidden" name="operation" value="delete"/>
                     <input type="hidden" name="postid" value="3"/>
                     <input type="submit" name="delete" value="delete this post"/>

@@ -16,6 +16,7 @@
     </div>
  <img src="/uploads/{{ user_filename }}" alt="{{ logname }}" style="width:42px;height:42px;"> {{ logname }} <br>
 <form action="/accounts/?target={{ request.path }}" method="post" enctype="multipart/form-data"><br>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input type="file" name="file" accept="image/*"/><br>
   <input type="text" name="fullname" value="{{ fullname }}" required/><br>
   <input type="text" name="email" value="{{ email }}" required/><br>

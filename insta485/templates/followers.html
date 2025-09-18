@@ -23,6 +23,7 @@
                 {% if follower.username != logname %} 
                     {% if follower.logname_follows_username %} following 
                     <form action="/following/?target={{ request.path }}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="submit" name="unfollow" value="unfollow"/>
                     <input type="hidden" name="username" value="{{ follower.username }}"/>
                     <input type="hidden" name="operation" value="unfollow"/>
@@ -30,6 +31,7 @@
                     {% endif %}
                     {% if not follower.logname_follows_username %} not following 
                     <form action="/following/?target={{ request.path }}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="submit" name="follow" value="follow"/>
                     <input type="hidden" name="username" value="{{ follower.username }}"/>
                     <input type="hidden" name="operation" value="follow"/>

@@ -43,6 +43,7 @@
                 </div>
                 
                     <form action="/likes/?target=/posts/4/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                     <input type="hidden" name="operation" value="like"/>
                     <input type="hidden" name="postid" value="4"/>
                     <input type="submit" name="like" value="like"/>
@@ -50,6 +51,7 @@
                 
                 <br>
                 <form action="/comments/?target=/posts/4/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="IjczNWM5Yjc5NGRkZmFkMTU0ZTRiNGExZTZkYThmNzlhNzgzYjZlMGEi.aMyXsA.UCc07t_M6UM6JRmJIvRBd8x8yn4">
                 <input type="hidden" name="operation" value="create"/>
                 <input type="hidden" name="postid" value="4"/>
                 <input type="text" name="text" required/>

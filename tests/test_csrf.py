@@ -92,14 +92,14 @@ def test_csrf_comment(client):
     assert "This is a malicious comment" not in text
 
     # Load the login page to get the CSRF token
-    response = client.get("posts/1/")
+    response = client.get("/posts/1/")
     assert response.status_code == 200
 
     # Parse CSRF token from form
     soup = bs4.BeautifulSoup(response.text, "html.parser")
 
     # Find the form for creating a new comment
-    comment_form = soup.find("form", {"action": "/comments/?target=/posts/1"})
+    comment_form = soup.find("form", {"action": "/comments/?target=/posts/1/"})
 
     # Extract the CSRF token
     csrf_token = comment_form.find("input", {"name": "csrf_token"})["value"]
