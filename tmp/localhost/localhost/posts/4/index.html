@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>insta485</title> 
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+    </head>
+
+    <body>
+        <div>
+            <h1><a href="/">Insta485</a></h1>
+
+            <h2><a href="/explore/">explore</a> |
+                <a href="/users/awdeorio/">awdeorio</a>
+            </h2>
+        </div>
+    <!-- User and Timestamp -->
+                <div>
+                    <a href="/users/jag/">
+                    <img src="/uploads/73ab33bd357c3fd42292487b825880958c595655.jpg" alt="" style="width:42px;height:42px;">
+                    </a>
+                    <a href="/users/jag/">jag</a>
+                    <a href="/posts/4/">just now </a>
+                </div>
+
+                <!-- Post -->
+                <div>
+                    <img src="/uploads/2ec7cf8ae158b3b1f40065abfb33e81143707842.jpg" alt="post_image" width="500" height="500">
+                </div>
+
+                <!-- Likes -->
+                <div>
+                    0 likes <br> <br> 
+                </div>
+
+                <!-- Comments -->
+                <div>
+                
+                    <a href="/users/jag/">jag</a> Saw this on the diag yesterday!<br><br>
+                    
+
+                
+                </div>
+                
+                    <form action="/likes/?target=/posts/4/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="operation" value="like"/>
+                    <input type="hidden" name="postid" value="4"/>
+                    <input type="submit" name="like" value="like"/>
+                    </form>
+                
+                <br>
+                <form action="/comments/?target=/posts/4/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="create"/>
+                <input type="hidden" name="postid" value="4"/>
+                <input type="text" name="text" required/>
+                <input type="submit" name="comment" value="comment"/>
+                </form>
+
+                
+
+    </body>
+</html>

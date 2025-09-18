@@ -5,7 +5,9 @@ from insta485.views.index import (
         show_followers,
         show_following,
         show_explore,
-        show_login,
-        show_post,
+        show_post
+)
 
+from insta485.views.accounts import (
+    show_login,
 )

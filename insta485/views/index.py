@@ -4,20 +4,21 @@ Insta485 index (main) view.
 URLs include:
 /
 """
-import flask
-import insta485
-import arrow
-from flask import abort, send_from_directory, session
 import os
+import flask
+from flask import abort, send_from_directory, session
+import arrow
+import insta485
+
+
 
 
 @insta485.app.route("/uploads/<filename>")
 def uploaded_file(filename):
     """Serve uploaded files with login required."""
-    # TODO: replace hardcoded login with session-based login
-    #if "logname" not in session:
-        #abort(403)
-
+    if 'logname' not in session:
+        abort(403)
+        
     folder = str(insta485.app.config["UPLOAD_FOLDER"])
     path = os.path.join(folder, filename)
 
@@ -37,7 +38,6 @@ def show_index():
     connection = insta485.model.get_db()
 
     # Query database
-    # TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = session['logname']
     posts = connection.execute(
         "SELECT posts.postid, posts.filename AS post_filename, "
@@ -89,10 +89,11 @@ def show_users(user_url_slug):
 
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
-    
+
     connection = insta485.model.get_db()
-    # TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = session['logname']
+
+
 
     user = connection.execute(
         "SELECT username, fullname FROM users WHERE username = ?",
@@ -159,7 +160,6 @@ def show_following(user_url_slug):
         return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
-    # TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = session['logname']
 
     user = connection.execute(
@@ -206,7 +206,6 @@ def show_followers(user_url_slug):
         return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
-    # TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = session['logname']
 
     user = connection.execute(
@@ -251,9 +250,8 @@ def show_post(postid_url_slug):
 
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
-    
+
     connection = insta485.model.get_db()
-    # TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = session['logname']
 
     post = connection.execute(
@@ -315,7 +313,6 @@ def show_explore():
         return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
-    # TODO: REPLACE WITH LOGNAME LATER!!!!
     logname = session['logname']
 
     not_following_rows = connection.execute(
@@ -344,138 +341,3 @@ def show_explore():
 
     context = {'logname': logname, 'not_following': not_following}
     return flask.render_template('explore.html', **context)
-
-@insta485.app.route('/accounts/login/')
-def show_login():
-    """Show accounts/ login page"""
-    if 'logname' in session:
-        return flask.redirect(flask.url_for('show_index'))
-    else:
-        return flask.render_template('login.html')
-
-
-@insta485.app.route('/accounts/create/')
-def show_create():
-    """show accounts/create page"""
-    if 'logname' in session:
-        return flask.redirect(flask.url_for('show_edit'))
-    else:
-        return flask.render_template('create.html')
-
-@insta485.app.route('/accounts/delete/')
-def show_delete():
-    if 'logname' not in session:
-        return flask.redirect(flask.url_for('show_login'))
-    else:
-        return flask.render_template('delete.html', logname=session['logname'])
-
-
-@insta485.app.route('/accounts/edit/')
-def show_edit():
-    """Show accounts/edit page"""
-    if 'logname' not in session:
-        return flask.redirect(flask.url_for('show_login'))
-
-    else:
-        logname = session['logname']
-        connection = insta485.model.get_db()
-
-        user_info = connection.execute(
-            "SELECT username, fullname, "
-            "email, filename AS user_filename "
-            "FROM users "
-            "Where username = ?",
-            (logname,)
-        ).fetchone()
-
-        context = {'logname': logname, 'user_info': user_info}
-        return flask.render_template('edit.html', **context)
-    
-@insta485.app.route('/accounts/password/')
-def show_password():
-    """Show accounts/delete page"""
-    if 'logname' not in session:
-        return flask.redirect(flask.url_for('show_login'))
-    else:
-        return flask.render_template('password.html', logname=session['logname'])
-
-@insta485.app.route('/accounts/logout/', methods=['POST'])
-def logout():
-    """Log out user and redirect to login page."""
-
-    session.clear()
-    return flask.redirect(flask.url_for('show_login'))
-        
-import hashlib
-
-
-@insta485.app.route('/accounts/', methods=['POST'])
-def accounts():
-    """Perform account operations and redirect."""
-
-    operation = flask.request.form.get('operation')
-    target = flask.request.args.get('target', flask.url_for('show_index'))
-
-    if operation == "login":
-        # TODO: handle login (check username/password, set session)
-
-        username = flask.request.form.get('username')
-        password = flask.request.form.get('password')
-
-
-        if not username or not password:
-            abort(400)
-
-        connection = insta485.model.get_db()
-
-        login_info = connection.execute(
-            "SELECT password "
-            "FROM users "
-            "WHERE username = ?",
-            (username,)
-        ).fetchone()
-
-        # No matching username
-        if login_info is None:
-            abort(403)
-
-        algorithm, salt, true_hashed_password = login_info['password'].split('$',2)
-
-        m = hashlib.new(algorithm)
-        password_salted = salt + password
-        m.update(password_salted.encode('utf-8'))
-        password_hash = m.hexdigest()
-
-        if password_hash != true_hashed_password:
-            abort(403)
-        else:
-            session['logname'] = username
-
-        
-
-    elif operation == "create":
-        # TODO: handle account creation
-        pass
-
-    elif operation == "delete":
-        # TODO: handle account deletion
-        pass
-
-    elif operation == "edit_account":
-        # TODO: handle account editing
-        pass
-
-    elif operation == "update_password":
-        # TODO: handle password update
-        pass
-
-    elif operation == "logout":
-        # TODO: handle logout
-        pass
-
-    else:
-        # Invalid operation
-        abort(400)
-
-    # Finally redirect to target
-    return flask.redirect(target)

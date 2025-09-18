@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>insta485</title> 
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+    </head>
+
+    <body>
+        <div>
+            <h1><a href="/">Insta485</a></h1>
+
+            <h2><a href="/explore/">explore</a> |
+                <a href="/users/awdeorio/">awdeorio</a>
+            </h2>
+        </div>
+    <!-- User and Timestamp -->
+                <div>
+                    <a href="/users/jflinn/">
+                    <img src="/uploads/505083b8b56c97429a728b68f31b0b2a089e5113.jpg" alt="" style="width:42px;height:42px;">
+                    </a>
+                    <a href="/users/jflinn/">jflinn</a>
+                    <a href="/posts/2/">just now </a>
+                </div>
+
+                <!-- Post -->
+                <div>
+                    <img src="/uploads/ad7790405c539894d25ab8dcf0b79eed3341e109.jpg" alt="post_image" width="500" height="500">
+                </div>
+
+                <!-- Likes -->
+                <div>
+                    2 likes <br> <br> 
+                </div>
+
+                <!-- Comments -->
+                <div>
+                
+                    <a href="/users/awdeorio/">awdeorio</a> Sick #crossword<br><br>
+                    
+                        <form action="/comments/?target=/posts/2/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="delete"/>
+                        <input type="hidden" name="commentid" value=""/>
+                        <input type="submit" name="uncomment" value="delete"/>
+                        </form>
+                    
+
+                
+                </div>
+                
+                    <form action="/likes/?target=/posts/2/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="operation" value="unlike"/>
+                    <input type="hidden" name="postid" value="2"/>
+                    <input type="submit" name="unlike" value="unlike"/>
+                    </form>
+                
+                
+                <br>
+                <form action="/comments/?target=/posts/2/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="create"/>
+                <input type="hidden" name="postid" value="2"/>
+                <input type="text" name="text" required/>
+                <input type="submit" name="comment" value="comment"/>
+                </form>
+
+                
+
+    </body>
+</html>

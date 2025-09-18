@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>insta485</title> 
+    </head>
+
+    <body>
+        
+        <!-- Top Heading -->
+        <div>
+            <h1><a href="/">Insta485</a></h1>
+            <h2><a href="/explore/">explore</a> |
+                <a href="/users/awdeorio/">awdeorio</a>
+            </h2>
+
+        </div>
+
+        <!-- BIO -->
+        <div>
+
+            <h2>
+                awdeorio
+            </h2>
+            
+                <a href="/accounts/edit/"> Edit profile</a>
+                <form action="/accounts/logout/" method="post" enctype="multipart/form-data">
+                <input type="submit" name="logout" value="Logout"/>
+                </form>
+            
+
+
+            <h3>
+            <br><br>
+            2 posts 
+            <a href="/users/awdeorio/followers/">2 followers </a> 
+            <a href="/users/awdeorio/following/">2 following</a>
+            </h3>
+
+            <h2>Andrew DeOrio</h2>
+
+
+        </div>
+            
+            <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+                <form action="/posts/?target=/users/awdeorio/" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required/>
+                <input type="submit" name="create_post" value="upload new post"/>
+                <input type="hidden" name="operation" value="create"/>
+                </form>
+            
+            <br><br>
+        <div>
+            
+                
+                    <a href="/posts/3/"><img src="/uploads/9887e06812ef434d291e4936417d125cd594b38a.jpg" alt="post_image" width="500" height="500"></a>
+                
+                    <a href="/posts/1/"><img src="/uploads/122a7d27ca1d7420a1072f695d9290fad4501a41.jpg" alt="post_image" width="500" height="500"></a>
+                
+            
+            
+        </div>
+
+    </body>
+</html>
+
+    
