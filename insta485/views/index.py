@@ -11,14 +11,12 @@ import arrow
 import insta485
 
 
-
-
 @insta485.app.route("/uploads/<filename>")
 def uploaded_file(filename):
     """Serve uploaded files with login required."""
     if 'logname' not in session:
         abort(403)
-        
+
     folder = str(insta485.app.config["UPLOAD_FOLDER"])
     path = os.path.join(folder, filename)
 
@@ -82,18 +80,13 @@ def show_index():
 
 
 @insta485.app.route('/users/<user_url_slug>/')
-
-
 def show_users(user_url_slug):
-    """Show user page"""
-
+    """Show user page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
     connection = insta485.model.get_db()
     logname = session['logname']
-
-
 
     user = connection.execute(
         "SELECT username, fullname FROM users WHERE username = ?",
@@ -154,8 +147,7 @@ def show_users(user_url_slug):
 
 @insta485.app.route('/users/<user_url_slug>/following/')
 def show_following(user_url_slug):
-    """Show following page"""
-
+    """Show following page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
@@ -200,8 +192,7 @@ def show_following(user_url_slug):
 
 @insta485.app.route('/users/<user_url_slug>/followers/')
 def show_followers(user_url_slug):
-    """show followers page"""
-
+    """Show followers page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
@@ -246,8 +237,7 @@ def show_followers(user_url_slug):
 
 @insta485.app.route('/posts/<postid_url_slug>/')
 def show_post(postid_url_slug):
-    """show post page"""
-
+    """Show post page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
@@ -296,7 +286,7 @@ def show_post(postid_url_slug):
     ).fetchone()
 
     if like_query:
-        liked=True
+        liked = True
 
     post["liked"] = liked
 
@@ -307,8 +297,7 @@ def show_post(postid_url_slug):
 
 @insta485.app.route('/explore/')
 def show_explore():
-    """Show explore page"""
-
+    """Show explore page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
@@ -316,14 +305,14 @@ def show_explore():
     logname = session['logname']
 
     not_following_rows = connection.execute(
-        "SELECT users.username " 
+        "SELECT users.username "
         "FROM users "
         "WHERE users.username != ? "
         "AND username NOT IN "
-        "(SELECT following.followee " 
-        "FROM following " 
+        "(SELECT following.followee "
+        "FROM following "
         "WHERE following.follower = ?)",
-        (logname,logname)
+        (logname, logname)
     ).fetchall()
 
     not_following = []
@@ -336,8 +325,9 @@ def show_explore():
             (username,)
         ).fetchone()
         user_filename = user["user_filename"]
-        not_following.append({'username': username, 'user_filename': user_filename})
-
+        not_following.append({
+            'username': username, 'user_filename': user_filename
+            })
 
     context = {'logname': logname, 'not_following': not_following}
     return flask.render_template('explore.html', **context)

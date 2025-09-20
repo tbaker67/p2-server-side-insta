@@ -16,8 +16,6 @@ from insta485.views.accounts import (
     show_password,
     create_file,
     accounts
-    
-    
 )
 
 from insta485.views.buttons import (

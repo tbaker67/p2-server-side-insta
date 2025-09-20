@@ -1,4 +1,4 @@
-"""insta485 accounts views"""
+"""Insta485 accounts views."""
 import pathlib
 import hashlib
 import uuid
@@ -6,9 +6,10 @@ import flask
 from flask import abort, session
 import insta485
 
+
 @insta485.app.route('/accounts/login/')
 def show_login():
-    """Show accounts/ login page"""
+    """Show accounts/ login page."""
     if 'logname' in session:
         return flask.redirect(flask.url_for('show_index'))
 
@@ -17,7 +18,7 @@ def show_login():
 
 @insta485.app.route('/accounts/create/')
 def show_create():
-    """show accounts/create page"""
+    """Show accounts/create page."""
     if 'logname' in session:
         return flask.redirect(flask.url_for('show_edit'))
     return flask.render_template('create.html')
@@ -25,7 +26,7 @@ def show_create():
 
 @insta485.app.route('/accounts/delete/')
 def show_delete():
-    """show acounts deletion page"""
+    """Show acounts deletion page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
@@ -34,7 +35,7 @@ def show_delete():
 
 @insta485.app.route('/accounts/edit/')
 def show_edit():
-    """Show accounts/edit page"""
+    """Show accounts/edit page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
@@ -50,7 +51,7 @@ def show_edit():
     ).fetchone()
 
     context = {
-        'logname': logname, 
+        'logname': logname,
         'username': user_info_row['username'],
         'fullname': user_info_row['fullname'],
         'email': user_info_row['email'],
@@ -61,23 +62,23 @@ def show_edit():
 
 @insta485.app.route('/accounts/password/')
 def show_password():
-    """Show accounts/delete page"""
+    """Show accounts/delete page."""
     if 'logname' not in session:
         return flask.redirect(flask.url_for('show_login'))
 
     return flask.render_template('password.html', logname=session['logname'])
 
+
 @insta485.app.route('/accounts/logout/', methods=['POST'])
 def logout():
     """Log out user and redirect to login page."""
-
     session.clear()
 
     return flask.redirect(flask.url_for('show_login'))
 
 
 def create_password(password):
-    """Create a hashed and salted password to store in the db"""
+    """Create a hashed and salted password to store in the db."""
     algorithm = 'sha512'
     salt = uuid.uuid4().hex
     hash_obj = hashlib.new(algorithm)
@@ -89,18 +90,17 @@ def create_password(password):
 
 
 def create_file(fileobj):
-    """create a uuid file for the db and return the new filename"""
-
+    """Create a uuid file for the db and return the new filename."""
     if fileobj is None:
         abort(400)
     filename = fileobj.filename
 
     # Compute base name (filename without directory).  We use a UUID to avoid
-    # clashes with existing files, and ensure that the name is compatible with the
+    # clashes with existing files, and ensure that the name is compatible with
+    # the
     # filesystem. For best practive, we ensure uniform file extensions (e.g.
     # lowercase).
 
-        
     stem = uuid.uuid4().hex
     suffix = pathlib.Path(filename).suffix.lower()
     uuid_basename = f"{stem}{suffix}"
@@ -112,10 +112,9 @@ def create_file(fileobj):
 
 
 def login_account(target):
-    """handle login post requests"""
+    """Handle login post requests."""
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
-
 
     if not username or not password:
         abort(400)
@@ -133,7 +132,8 @@ def login_account(target):
     if login_info is None:
         abort(403)
 
-    algorithm, salt, true_hashed_password = login_info['password'].split('$',2)
+    algorithm, salt, true_hashed_password = login_info['password'].split(
+        '$', 2)
 
     m = hashlib.new(algorithm)
     password_salted = salt + password
@@ -148,7 +148,7 @@ def login_account(target):
 
 
 def create_account(target):
-    """handle account creation"""
+    """Handle account creation."""
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
     email = flask.request.form.get('email')
@@ -182,8 +182,9 @@ def create_account(target):
     session['logname'] = username
     return flask.redirect(target)
 
+
 def delete_account(target):
-    """handle account deletion post requests from the form"""
+    """Handle account deletion post requests from the form."""
     if 'logname' not in session:
         abort(403)
 
@@ -225,8 +226,9 @@ def delete_account(target):
     session.clear()
     return flask.redirect(target)
 
+
 def edit_account(target):
-    """handle account editing"""
+    """Handle account editing."""
     if 'logname' not in session:
         abort(403)
     logname = session['logname']
@@ -268,13 +270,14 @@ def edit_account(target):
             "UPDATE users "
             "SET email = ?, fullname = ? "
             "WHERE username = ?",
-            (email, fullname , logname)
+            (email, fullname, logname)
         )
 
     return flask.redirect(target)
 
+
 def update_password_account(target):
-    """handle password update post requests from the form"""
+    """Handle password update post requests from the form."""
     if 'logname' not in session:
         abort(403)
 
@@ -294,8 +297,8 @@ def update_password_account(target):
         (logname,)
     ).fetchone()
 
-
-    algorithm, salt, true_hashed_password = login_info['password'].split('$',2)
+    algorithm, salt, true_hashed_password = login_info['password'].split(
+        '$', 2)
 
     m = hashlib.new(algorithm)
     password_salted = salt + password
@@ -314,17 +317,15 @@ def update_password_account(target):
         "UPDATE users "
         "SET password = ? "
         "WHERE username = ?",
-        (password_db,logname)
+        (password_db, logname)
     )
 
     return flask.redirect(target)
 
 
-
 @insta485.app.route('/accounts/', methods=['POST'])
 def accounts():
     """Perform account operations and redirect."""
-
     operation = flask.request.form.get('operation')
     target = flask.request.args.get('target', flask.url_for('show_index'))
 
@@ -343,13 +344,13 @@ def accounts():
     if operation == "update_password":
         return update_password_account(target)
 
-
     # Invalid operation
     abort(400)
 
 
 @insta485.app.route('/accounts/auth/')
 def show_auth():
+    """Authenticate GET request."""
     if 'logname' not in session:
         abort(403)
     return flask.Response(status=200)
